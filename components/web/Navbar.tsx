@@ -3,23 +3,25 @@ import Link from "next/link";
 
 export function Navbar() {
     return (
-        <nav className="w-full py-5 flex items-center justify-between">
-            <div className="flex items-center gap-8 ">
-                <Link href="/">
-                    <h1 className="text-3xl font-bold">
-                        Next<span className="text-blue-500">Pro</span>
-                    </h1>
-                </Link>
+        <nav className="border-b">
+            <div className="container mx-auto px-4 py-5 flex items-center justify-between">
+                <div className="flex items-center gap-8">
+                    <Link href="/">
+                        <h1 className="text-3xl font-bold">
+                            Next<span className="text-blue-500">Pro</span>
+                        </h1>
+                    </Link>
 
-                <div className="flex items-center gap-2">
-                    <Link href="/">Home</Link>
-                    <Link href="/blog">Blog</Link>
-                    <Link href="/blog/create">Create</Link>
+                    <div className="flex items-center gap-4">
+                        <Link href="/" className="hover:text-blue-500 transition-colors">Home</Link>
+                        <Link href="/blog" className="hover:text-blue-500 transition-colors">Blog</Link>
+                        <Link href="/blog/create" className="hover:text-blue-500 transition-colors">Create</Link>
+                    </div>
                 </div>
-            </div>
-            <div className="flex items-center gap-2 mr-2">
-                <Link href="/auth/sign-up" className={buttonVariants()}>Sign up</Link>
-                <Link href="/auth/login" className={buttonVariants({ variant: "secondary" })}>Login</Link>
+                <div className="flex items-center gap-2">
+                    <Link href="/auth/signup" className={buttonVariants()}>Sign up</Link>
+                    <Link href="/auth/login" className={buttonVariants({ variant: "secondary" })}>Login</Link>
+                </div>
             </div>
         </nav>
     );

@@ -4,10 +4,12 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpSchema } from "@/app/schemas/auth";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
+import Link from "next/link";
 
 export default function SignUpPage() {
 
@@ -16,7 +18,8 @@ export default function SignUpPage() {
     defaultValues:{
       email:"",
       name:"",
-      password:""
+      password:"",
+      role: "user"
     }
   })
 
@@ -72,7 +75,34 @@ export default function SignUpPage() {
                 <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
               )}
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="role" className="text-sm font-medium">Role</Label>
+              <Controller
+                name="role"
+                control={form.control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="user">User</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {form.formState.errors.role && (
+                <p className="text-sm text-red-500">{form.formState.errors.role.message}</p>
+              )}
+            </div>
             <Button type="submit" className="w-full h-11 text-base">Sign up</Button>
+            <p className="text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/auth/login" className="text-primary hover:underline">
+                Log in
+              </Link>
+            </p>
           </form>
         </CardContent>
       </Card>

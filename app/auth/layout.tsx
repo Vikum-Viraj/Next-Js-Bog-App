@@ -1,18 +1,17 @@
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Children } from "react";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="absolute top-5 left-5">
+    <div className="container mx-auto px-4">
+      <div className="py-4">
         <Link href="/" className={buttonVariants({ variant: "secondary" })}>
-          <ArrowLeft className="size-4" />
+          <ArrowLeft className="size-4 mr-2" />
           Go Back
         </Link>
       </div>
-      <div>{children}</div>
+      {children}
     </div>
   );
 }
