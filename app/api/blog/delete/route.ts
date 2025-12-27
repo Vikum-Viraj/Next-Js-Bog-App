@@ -1,5 +1,5 @@
 import connectToDatabase from "@/app/lib/db";
-import Blog from "@/app/models/user-model";
+import Blog from "@/app/models/blog-schema";
 import { NextRequest } from "next/server";
 
 export async function DELETE(request: NextRequest) {

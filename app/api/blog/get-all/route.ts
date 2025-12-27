@@ -1,12 +1,12 @@
 import connectToDatabase from "@/app/lib/db";
-import Blog from "@/app/models/user-model";
+import Blog from "@/app/models/blog-schema";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     try {
         await connectToDatabase();
         
-        const blogs = await Blog.find({}).sort({ createdAt: -1 });
+        const blogs = await Blog.find({});
 
         return new Response(
             JSON.stringify({ blogs }), 

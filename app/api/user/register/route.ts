@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/app/lib/db";
-import User from "@/app/models/blog-schema";
+import UserModel from "@/app/models/user-model";
 import bcrypt from "bcryptjs";
 import { SignUpSchema } from "@/app/schemas/auth";
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     await connectToDatabase();
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await UserModel.findOne({ email });
     
     if (existingUser) {
       return NextResponse.json(
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create new user
-    const newUser = await User.create({
+    const newUser = await UserModel.create({
       name,
       email,
       password: hashedPassword,
