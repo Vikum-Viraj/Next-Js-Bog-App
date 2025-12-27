@@ -9,8 +9,14 @@ import { LoginSchema } from "@/app/schemas/auth";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import axios from "axios";
 
 export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -20,12 +26,27 @@ export default function LoginPage() {
     }
   })
 
-  function onSubmit(values: z.infer<typeof LoginSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof LoginSchema>) {
+    setIsLoading(true);
+    try {
+      const response = await axios.post("/api/user/login", values);
+      
+      if (response.data.success) {
+        toast.success(response.data.message || "Login successful!");
+        form.reset();
+        router.push("/blog");
+      } else {
+        toast.error(response.data.message || "Login failed");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "An error occurred during login");
+    } finally {
+      setIsLoading(false);
+    }
   }
   
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
+    <div className="flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader className="space-y-3">
           <CardTitle className="text-2xl">Log in</CardTitle>
@@ -59,7 +80,9 @@ export default function LoginPage() {
                 <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full h-11 text-base">Log in</Button>
+            <Button type="submit" className="w-full h-11 text-base" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Log in"}
+            </Button>
             <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Link href="/auth/signup" className="text-primary hover:underline">

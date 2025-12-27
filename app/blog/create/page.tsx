@@ -40,8 +40,8 @@ export default function CreateBlogPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-2xl">
+    <div className="container mx-auto px-4 py-8">
+      <Card className="w-full max-w-2xl mx-auto">
         <CardHeader className="space-y-3">
           <CardTitle className="text-2xl">Create Blog Post</CardTitle>
           <CardDescription className="text-base">Write a new blog post</CardDescription>

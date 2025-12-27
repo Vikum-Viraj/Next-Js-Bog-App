@@ -1,9 +1,21 @@
 import mongoose from "mongoose";
 
-const blogSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+const userSchema = new mongoose.Schema({
+    email: { 
+        type: String, 
+        required: true, 
+        unique: true 
+    },
+    password: { 
+        type: String, 
+        required: true 
+    },
+    role: { 
+        type: String, 
+        enum: ["user", "admin"], 
+        default: "user" 
+    },
 }, { timestamps: true });
 
-const Blog = mongoose.models.Blog || mongoose.model("Blog", blogSchema);
-export default Blog;
+const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
+export default UserModel;

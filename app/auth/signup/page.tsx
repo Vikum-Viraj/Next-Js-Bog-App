@@ -10,8 +10,13 @@ import { SignUpSchema } from "@/app/schemas/auth";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -23,12 +28,43 @@ export default function SignUpPage() {
     }
   })
 
-  function onSubmit(values: z.infer<typeof SignUpSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof SignUpSchema>) {
+    try {
+      setIsLoading(true);
+      
+      const response = await fetch("/api/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.error || "Registration failed");
+        return;
+      }
+
+      toast.success("Account created successfully! Redirecting to login...");
+      form.reset();
+      
+      // Redirect to login page after successful registration
+      setTimeout(() => {
+        router.push("/auth/login");
+      }, 1500);
+
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
   
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
+    <div className="flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader className="space-y-3">
           <CardTitle className="text-2xl">Sign up</CardTitle>
@@ -96,7 +132,9 @@ export default function SignUpPage() {
                 <p className="text-sm text-red-500">{form.formState.errors.role.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full h-11 text-base">Sign up</Button>
+            <Button type="submit" className="w-full h-11 text-base" disabled={isLoading}>
+              {isLoading ? "Creating account..." : "Sign up"}
+            </Button>
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
               <Link href="/auth/login" className="text-primary hover:underline">

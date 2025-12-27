@@ -62,12 +62,17 @@ export default function Blogs() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center">Loading blogs...</div>;
+    return <div className="container mx-auto px-4 py-8 text-center">Loading blogs...</div>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8">Blog Posts</h1>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">Blog Posts</h1>
+        <Button asChild>
+          <Link href="/blog/create">Create Blog Post</Link>
+        </Button>
+      </div>
       {blogs.length === 0 ? (
         <p className="text-gray-500">No blogs yet. Create your first blog post!</p>
       ) : (
