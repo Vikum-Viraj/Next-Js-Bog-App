@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import PaginationComponent from "@/components/web/Pagination";
 
 interface Blog {
   _id: string;
@@ -20,6 +21,8 @@ export default function Blogs() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [isChecking, setIsChecking] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
   const router = useRouter();
 
   useEffect(() => {
@@ -83,6 +86,16 @@ export default function Blogs() {
     return <div className="container mx-auto px-4 py-8 text-center">Loading blogs...</div>;
   }
 
+  // Calculate paginated blogs
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedBlogs = blogs.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
@@ -94,38 +107,49 @@ export default function Blogs() {
       {blogs.length === 0 ? (
         <p className="text-gray-500">No blogs yet. Create your first blog post!</p>
       ) : (
-        <div className="grid gap-6">
-          {blogs.map((blog) => (
-            <Card key={blog._id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-4">
-                  <Link href={`/blog/${blog._id}`} className="flex-1 cursor-pointer">
-                    <CardTitle className="text-xl hover:underline">{blog.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">{blog.description}</CardDescription>
-                  </Link>
-                  <div className="flex gap-2 shrink-0">
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={(e) => handleEdit(e, blog._id)}
-                      className="cursor-pointer"
-                    >
-                      <Edit className="size-4" />
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="icon"
-                      onClick={(e) => handleDelete(e, blog._id)}
-                      className="cursor-pointer"
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
+        <>
+          <div className="grid gap-6">
+            {paginatedBlogs.map((blog) => (
+              <Card key={blog._id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-4">
+                    <Link href={`/blog/${blog._id}`} className="flex-1 cursor-pointer">
+                      <CardTitle className="text-xl hover:underline">{blog.title}</CardTitle>
+                      <CardDescription className="line-clamp-2">{blog.description}</CardDescription>
+                    </Link>
+                    <div className="flex gap-2 shrink-0">
+                      <Button 
+                        variant="outline" 
+                        size="icon"
+                        onClick={(e) => handleEdit(e, blog._id)}
+                        className="cursor-pointer"
+                      >
+                        <Edit className="size-4" />
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        size="icon"
+                        onClick={(e) => handleDelete(e, blog._id)}
+                        className="cursor-pointer"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="mt-8">
+            <PaginationComponent
+              items={blogs.length}
+              currentPage={currentPage}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        </>
       )}
     </div>
   );
