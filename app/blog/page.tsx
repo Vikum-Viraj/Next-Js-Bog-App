@@ -19,11 +19,29 @@ interface Blog {
 export default function Blogs() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isChecking, setIsChecking] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    fetchBlogs();
+    checkAuth();
   }, []);
+
+  async function checkAuth() {
+    try {
+      const response = await axios.get("/api/user/check-auth");
+      if (!response.data.isAuthenticated) {
+        toast.error("Please login to view blogs");
+        router.push("/auth/login");
+        return;
+      }
+      setIsChecking(false);
+      fetchBlogs();
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      toast.error("Please login to continue");
+      router.push("/auth/login");
+    }
+  }
 
   async function fetchBlogs() {
     try {
@@ -61,7 +79,7 @@ export default function Blogs() {
     router.push(`/blog/update/${blogId}`);
   }
 
-  if (loading) {
+  if (isChecking || loading) {
     return <div className="container mx-auto px-4 py-8 text-center">Loading blogs...</div>;
   }
 

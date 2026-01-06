@@ -41,9 +41,18 @@ export const POST = async (request: Request) => {
             Date.now() + (parseInt(process.env.COOKIE_EXPIRES || "7")) * 24 * 60 * 60 * 1000
         );
         
+        // Set httpOnly cookie for security
         response.cookies.set(process.env.COOKIE_KEY || "auth_token", token, {
             expires,
             httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: 'lax'
+        });
+
+        // Set a client-readable cookie to check auth state
+        response.cookies.set("isLoggedIn", "true", {
+            expires,
+            httpOnly: false,
             secure: process.env.NODE_ENV === "production",
             sameSite: 'lax'
         });
