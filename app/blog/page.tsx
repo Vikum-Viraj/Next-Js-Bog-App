@@ -140,7 +140,7 @@ export default function Blogs() {
               </Card>
             ))}
           </div>
-          
+          {/*pagination component*/}
           <div className="mt-8">
             <PaginationComponent
               items={blogs.length}
